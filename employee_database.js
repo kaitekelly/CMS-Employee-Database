@@ -39,13 +39,95 @@ function start() {
           "Remove employee",
           "Update employee role",
           "Update employee manager",
-          "View all employees",
           "Add role",
           "View all roles",
-          "Remove role"
+          "Remove role",
         ]
     })
+    .then(function(answer) {
+        switch (answer.action) {
+        case "View all employees":
+        viewEmployees();
+        break;
+
+        case "View all employees by department":
+        viewDepartment();
+        break;
+
+        case "View all employees by manager":
+        viewManager();
+        break;
+
+        case "Add employee":
+        addEmployee();
+        break;
+
+        case "Remove employee":
+            removeEmployee();
+        break;
+
+        case "Update employee role":
+            updateRole();
+        break;
+
+        case "Update employee manager":
+            updateManager();
+        break;
+
+        case "Add role":
+            viewAllEmployees();
+        break;
+
+        case "View all roles":
+            viewAllRoles();
+        break;
+
+        case "Remove role":
+            removeRole();
+        break;
+
+        
+
+        }
+    })
 }
+
+function viewAllEmployees() {
+
+}
+
+function viewDepartment() {
+
+}
+
+function viewManager() {
+
+}
+
+function addEmployee() {
+
+}
+
+function removeEmployee() {
+
+}
+
+function updateRole() {
+
+}
+
+function updateManager() {
+
+}
+
+function viewAllRoles() {
+
+}
+
+function removeRole() {
+
+}
+
 //  pseudocode
 
 //schema
