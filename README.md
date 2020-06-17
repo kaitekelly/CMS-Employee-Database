@@ -21,7 +21,7 @@ CMS-Employee-Database
 n/a
 
 # Installation: 
-💾 In the command line of the working directory, install the following NPM packages: NPM install, mySQL, 
+💾 In the command line of the working directory, install the following NPM packages: NPM install, mySQL, Inquirer, Console.table
 
 # Usage: 
 

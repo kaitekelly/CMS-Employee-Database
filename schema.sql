@@ -1,9 +1,9 @@
 /* Schema for SQL database/table. We haven't discussed this type of file yet */
-DROP DATABASE IF EXISTS employee_cms_db;
+DROP DATABASE IF EXISTS employee_cms_DB;
 
 /* Create database */
-CREATE DATABASE employee_cms_db;
-USE employee_cms_db;
+CREATE DATABASE employee_cms_DB;
+USE employee_cms_DB;
 
 /* Create new table with a primary key that auto-increments, and a text field */
 CREATE TABLE departments (
@@ -26,4 +26,4 @@ CREATE TABLE  employee (
     last_name  VARCHAR(30) NOT NULL, 
     role_id INT, 
     manager_id INT NULL
-)
+);
