@@ -117,16 +117,6 @@ function addEmployee() {
                     type: "rawlist",
                     message: "What is the employee's role?",
                     choices: roleArray
-                    // choices: [
-                    //     "Sales Lead",
-                    //     "Salesperson",
-                    //     "Lead Engineer",
-                    //     "Software Engineer",
-                    //     "Account Manager",
-                    //     "Accountant",
-                    //     "Legal Team Lead",
-                    //     "Lawyer",
-                    // ]
                 }, {
                     name: "manager_id",
                     type: "input",
@@ -152,20 +142,65 @@ function addEmployee() {
 
 }
 
+function addRole() {
+    connection.query(
+        "SELECT * FROM role",
+        function (err, res) {
+            if (err) throw err;
+            console.table(res);
+            let titleArray = [];
+            titleArray.push(res[0].title);
+            inquirer
+                .prompt([{
+                        name: "title",
+                        type: "input",
+                        message: "What is the title of the role you would like to create?"
+                    },
+                    {
+                        name: "salary",
+                        type: "input",
+                        message: "What is the salary for this role?"
+                    },
+                    {
+                        name: "department_id",
+                        type: "input",
+                        message: "What is the department id for this role?"
+                    },
+                ]).then(function (answer) {
+                    console.log("adding a new role....\n");
+                    connection.query(
+                        "INSERT INTO role SET ?", {
+                            //*need to add the placeholder value for this object*
+                            title: answer.title,
+                            salary: answer.salary,
+                            department_id: answer.department_id,
+                        },
+                        function (err, res) {
+                            if (err) throw err;
+                            console.table(res.affectedRows);
+                            start();
+                        });
+
+                })
+        });
+
+
+}
+
 function viewAllEmployees() {
     connection.query(
-        "SELECT * FROM employee", 
+        "SELECT * FROM employee",
         function (err, res) {
             if (err) throw err;
             console.table(res);
             start();
         });
-        
+
 }
 
 function viewAllRoles() {
     connection.query(
-        "SELECT * FROM role", 
+        "SELECT * FROM role",
         function (err, res) {
             if (err) throw err;
             console.table(res);
@@ -175,7 +210,7 @@ function viewAllRoles() {
 
 function viewDepartment() {
     connection.query(
-        "SELECT * FROM departments", 
+        "SELECT * FROM departments",
         function (err, res) {
             if (err) throw err;
             console.table(res);
@@ -183,24 +218,9 @@ function viewDepartment() {
         });
 }
 
-// function viewDepartment() {
-//     let query = connection.query(
-//         "SELECT * FROM employee_cms_DB.departments", {
 
-//         },
-//         function (err, res) {
-//             if (err) throw err;
-//             console.log(res.affectedRows + " view all employees!\n");
-//             // *Call next function AFTER the INSERT completes*
-//         });
-//     console.table(query.sql);
 
-//     //Legal
-//     //Sales
-//     //Finance
-//     //Engineering
 
-// }
 
 // function viewManager() {
 
@@ -221,10 +241,30 @@ function removeEmployee() {
             // Call readProducts AFTER the DELETE completes
             start();
         }
-        
+
     );
 
 }
+
+function updateRole() {
+    connection.query(
+        "UPDATE employee SET ? WHERE ?",
+        [{
+                role_id: answer.role_id
+            },
+            {
+                manager_id: answer.manager_id
+            }
+        ],
+        function (error) {
+            if (error) throw err;
+            console.log("Role updated successfully!");
+            start();
+        }
+    );
+
+}
+
 // function addRole() {
 
 // // Sales Lead
@@ -254,9 +294,7 @@ function removeEmployee() {
 //     connection.end();
 
 
-// function removeRole() {
 
-// }
 
 //  pseudocode
 

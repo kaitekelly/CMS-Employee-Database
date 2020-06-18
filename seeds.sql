@@ -40,5 +40,25 @@ VALUES ('Sales', 2), ('Engineering', 3), ('Account Management', 4), ('Finance', 
   * **salary** -  DECIMAL to hold role salary
   * **department_id** -  INT to hold reference to department role belongs to
 
+--    choices: [
+--                          "Sales Lead",
+--                         "Salesperson",
+--                         "Lead Engineer",
+--                         "Software Engineer",
+--                         "Account Manager",
+--                         "Accountant",
+--                          "Legal Team Lead",
+--                        "Lawyer",
+--                     ]
 
+ "UPDATE auctions SET ? WHERE ?",
+            [
+              {
+                highest_bid: answer.bid
+              },
+              {
+                id: chosenItem.id
+              }
+            ],
 
+`"DELETE FROM employee WHERE ?",
