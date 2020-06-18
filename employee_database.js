@@ -34,7 +34,7 @@ function start() {
             message: "What would you like to do?",
             choices: [
                 "View all employees",
-                "View all employees by department",
+                "View all departments",
                 "View all employees by manager",
                 "Add employee",
                 "Remove employee",
@@ -163,6 +163,26 @@ function viewAllEmployees() {
         
 }
 
+function viewAllRoles() {
+    connection.query(
+        "SELECT * FROM role", 
+        function (err, res) {
+            if (err) throw err;
+            console.table(res);
+            start();
+        });
+}
+
+function viewDepartment() {
+    connection.query(
+        "SELECT * FROM departments", 
+        function (err, res) {
+            if (err) throw err;
+            console.table(res);
+            start();
+        });
+}
+
 // function viewDepartment() {
 //     let query = connection.query(
 //         "SELECT * FROM employee_cms_DB.departments", {
@@ -225,15 +245,7 @@ function removeEmployee() {
 
 // }
 
-function viewAllRoles() {
-    connection.query(
-        "SELECT * FROM role", 
-        function (err, res) {
-            if (err) throw err;
-            console.table(res);
-            start();
-        });
-}
+
 //     console.log("Viewing all roles...\n");
 //   connection.query("SELECT * FROM roles", function(err, res) {
 //     if (err) throw err;
