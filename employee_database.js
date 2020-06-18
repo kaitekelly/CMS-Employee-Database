@@ -159,9 +159,7 @@ function viewAllEmployees() {
             if (err) throw err;
             console.table(res);
             start();
-            // *Call next function AFTER the INSERT completes*
         });
-    // console.table(query.res);
         
 }
 
@@ -193,16 +191,17 @@ function removeEmployee() {
     connection.query(
         "DELETE FROM employee WHERE ?",
         [{
-            first_name: ""
+            first_name: res.first_name
         }, {
-            last_name: ""
+            last_name: res.first_name
         }, ],
         function (err, res) {
             if (err) throw err;
             console.log(res.affectedRows + " employee deleted!\n");
             // Call readProducts AFTER the DELETE completes
-
+            start();
         }
+        
     );
 
 }
@@ -226,14 +225,22 @@ function removeEmployee() {
 
 // }
 
-// function viewAllRoles() {
+function viewAllRoles() {
+    connection.query(
+        "SELECT * FROM role", 
+        function (err, res) {
+            if (err) throw err;
+            console.table(res);
+            start();
+        });
+}
 //     console.log("Viewing all roles...\n");
 //   connection.query("SELECT * FROM roles", function(err, res) {
 //     if (err) throw err;
 //     // Log all results of the SELECT statement
 //     console.table(res);
 //     connection.end();
-// }
+
 
 // function removeRole() {
 
