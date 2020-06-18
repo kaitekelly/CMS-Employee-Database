@@ -51,7 +51,7 @@ function start() {
                     viewAllEmployees();
                     break;
 
-                case "View all employees by department":
+                case "View all departments":
                     viewDepartment();
                     break;
 
@@ -100,7 +100,7 @@ function addEmployee() {
         "SELECT * FROM role",
         function (err, res) {
             if (err) throw err;
-            console.log(res);
+            console.table(res);
             let roleArray = [];
             roleArray.push(res[0].title);
             inquirer
@@ -153,17 +153,16 @@ function addEmployee() {
 }
 
 function viewAllEmployees() {
-    let query = connection.query(
-        "SELECT * FROM employee_cms_DB.departments", {
-
-        },
+    connection.query(
+        "SELECT * FROM employee", 
         function (err, res) {
             if (err) throw err;
-            console.log(res.affectedRows + " view all employees!\n");
+            console.table(res);
+            start();
             // *Call next function AFTER the INSERT completes*
         });
-    console.table(query.sql);
-
+    // console.table(query.res);
+        
 }
 
 // function viewDepartment() {
