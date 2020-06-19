@@ -94,7 +94,6 @@ function start() {
                 case "Delete role":
                     deleteRole();
                     break;
-
             }
         })
 }
@@ -103,7 +102,6 @@ function addEmployee() {
     connection.query("SELECT * FROM role",
         function (err, res) {
             if (err) throw err;
-            // console.log(res + "from line 108");
             // let roleArray = [];
             for (let i = 0; i < res.length; i++) {
                 // let roleList = res[i].id + ' ' + res[i].title +  ' ' + res[i].salary + ' ' + res[i].department_id;
@@ -133,7 +131,6 @@ function addEmployee() {
                     console.log("adding an employee....\n");
                     connection.query(
                         "INSERT INTO employee SET ?", {
-                            //*need to add the placeholder value for this object*
                             first_name: answer.first_name,
                             last_name: answer.last_name,
                             role_id: answer.role_id,
@@ -216,7 +213,6 @@ function addDepartment() {
                         "INSERT INTO departments SET ?", {
                             id: answer.id,
                             name: answer.name,
-                            // department_id: answer.department_id,
                         },
                         function (err, res) {
                             if (err) throw err;
@@ -263,7 +259,6 @@ function updateRole() {
         "SELECT * FROM employee",
         function (err, emp) {
             if (err) throw err;
-            // console.log(emp + "from line 266");
             // let employeeArray = [];
             for (let i = 0; i < emp.length; i++) {
                 let employeeList = emp[i].id + ' ' + emp[i].first_name + ' ' + emp[i].last_name + ' ' + emp[i].role_id + ' ' + emp[i].manager_id;
@@ -275,7 +270,6 @@ function updateRole() {
     connection.query("SELECT * FROM role",
         function (err, res) {
             if (err) throw err;
-            // console.log(res + "from line 108");
             // let roleArray = [];
             for (let i = 0; i < res.length; i++) {
                 // let roleList = res[i].id + ' ' + res[i].title +  ' ' + res[i].salary + ' ' + res[i].department_id;
@@ -300,32 +294,41 @@ function updateRole() {
                 type: "rawlist",
                 message: "What is the employee's NEW role?",
                 choices: roleArray
-                // [
-                //     "Sales Lead",
-                //     "Salesperson",
-                //     "Lead Engineer",
-                //     "Software Engineer",
-                //     "Account Manager",
-                //     "Accountant",
-                //     "Legal Team Lead",
-                //     "Lawyer",
-                // ]
             },
         ]).then(function (answer) {
+            console.log(answer + "line 305")
             console.log("updating employee role....\n");
             connection.query(
-                "UPDATE employee SET role_id WHERE ?", {
-                    role_id: answer.role_id
-                },
+                // "UPDATE employee SET role_id WHERE first_name ? AND last_name ?", {
+                    "UPDATE employee SET role_id WHERE first_name ? AND last_name ?", [
+                        // {
+                    // answer: answer.role_id},
+                    {
+                    answer: answer.first_name},{
+                    answer: answer.last_name,
+                }],
                 function (err, res) {
                     if (err) throw err;
                     console.table(res.affectedRows);
+                    console.log(answer + "line 316");
                     start();
                 });
         })
     }
 }
 
+//[
+    // {
+    //     quantity: 100
+    //   },
+    //   {
+    //     flavor: "Rocky Road"
+    //   }
+    // ],
+//'UPDATE employee SET role_id WHERE first_name = `answer` = NULL AND last_name = ?'
+// "You have an error in your SQL syntax;  
+//right syntax to use near 'WHERE first_name = `answer` = 'CEO' AND last_name = ?' at line 1"
+// ('UPDATE collegeusers SET printCount = ? WHERE userid = ?', [printCount, userid],
 
 function deleteEmployee() {
     console.log("Removing employee...\n");
@@ -354,7 +357,7 @@ function deleteEmployee() {
                     console.log(answer);
                     console.log("deleting an employee....\n");
                     connection.query(
-                        "UPDATE employee SET role_id WHERE ?", {
+                        "DELETE FROM employee SET role_id WHERE ?", {
                             first_name: answer.first_name,
                             last_name: answer.last_name,
                             role_id: answer.role_id
@@ -372,53 +375,53 @@ function deleteEmployee() {
         })
 }
 
-function updateManager() {
-    connection.query(
-        "SELECT * FROM employee",
-        function (err, res) {
-            if (err) throw err;
-            console.table(res);
-            inquirer
-                .prompt([{
-                        name: "first_name",
-                        type: "input",
-                        message: "What is the employee's first name?"
-                    },
-                    {
-                        name: "last_name",
-                        type: "input",
-                        message: "What is the employee's last name?"
-                    }, {
-                        name: "role_id",
-                        type: "rawlist",
-                        message: "What is the employee's NEW role?",
-                        choices: [
-                            "Sales Lead",
-                            "Salesperson",
-                            "Lead Engineer",
-                            "Software Engineer",
-                            "Account Manager",
-                            "Accountant",
-                            "Legal Team Lead",
-                            "Lawyer",
-                        ]
-                    },
-                ]).then(function (answer) {
-                    console.log("updating employee role....\n");
-                    connection.query(
-                        "UPDATE employee SET role_id WHERE ?", {
-                            first_name: answer.first_name,
-                            last_name: answer.last_name,
-                            role_id: answer.role_id
-                        },
-                        function (err, res) {
-                            if (err) throw err;
-                            console.table(res.affectedRows);
-                            start();
-                        });
-                })
-        });
-}
+// function updateManager() {
+//     connection.query(
+//         "SELECT * FROM employee",
+//         function (err, res) {
+//             if (err) throw err;
+//             console.table(res);
+//             inquirer
+//                 .prompt([{
+//                         name: "first_name",
+//                         type: "input",
+//                         message: "What is the employee's first name?"
+//                     },
+//                     {
+//                         name: "last_name",
+//                         type: "input",
+//                         message: "What is the employee's last name?"
+//                     }, {
+//                         name: "role_id",
+//                         type: "rawlist",
+//                         message: "What is the employee's NEW role?",
+//                         choices: [
+//                             "Sales Lead",
+//                             "Salesperson",
+//                             "Lead Engineer",
+//                             "Software Engineer",
+//                             "Account Manager",
+//                             "Accountant",
+//                             "Legal Team Lead",
+//                             "Lawyer",
+//                         ]
+//                     },
+//                 ]).then(function (answer) {
+//                     console.log("updating employee role....\n");
+//                     connection.query(
+//                         "UPDATE employee SET role_id WHERE ?", {
+//                             first_name: answer.first_name,
+//                             last_name: answer.last_name,
+//                             role_id: answer.role_id
+//                         },
+//                         function (err, res) {
+//                             if (err) throw err;
+//                             console.table(res.affectedRows);
+//                             start();
+//                         });
+//                 })
+//         });
+// }
 
 
 // function viewManager() {
@@ -428,17 +431,6 @@ function updateManager() {
 // function updateManager() {
 
 // }
-
-
-//     console.log("Viewing all roles...\n");
-//   connection.query("SELECT * FROM roles", function(err, res) {
-//     if (err) throw err;
-//     // Log all results of the SELECT statement
-//     console.table(res);
-//     connection.end();
-
-
-
 
 //  pseudocode
 
