@@ -3,7 +3,9 @@ const inquirer = require("inquirer");
 const cTable = require('console.table');
 require('dotenv').config();
 
-
+let roleList = [];
+let roleArray = [];
+let employeeArray = [];
 // create the connection information for the sql database
 var connection = mysql.createConnection({
     host: "localhost",
@@ -42,7 +44,6 @@ function start() {
                 "Update employee role",
                 //bonus below
                 "View employees by manager",
-
                 "Update employee manager",
                 "Delete employee",
                 "Delete role",
@@ -101,13 +102,19 @@ function start() {
 function addEmployee() {
     //connection.query (SELECT * FROM roles, an array of objects will return including id, title, salary, dept id)
     //use map function  to create a new array where it is just returning the title as a string; from an 
-    connection.query(
-        "SELECT * FROM role",
+    connection.query("SELECT * FROM role",
         function (err, res) {
             if (err) throw err;
-            console.table(res);
+            console.log(res + "from line 108");
             let roleArray = [];
-            roleArray.push(res[0].title);
+            for (let i = 0; i < res.length; i++) {
+                // let roleList = res[i].id + ' ' + res[i].title +  ' ' + res[i].salary + ' ' + res[i].department_id;
+                let roleList = res[i].title;
+                console.log(roleList + "from line 111");
+                
+                roleArray.push(roleList);
+            }
+            // roleArray.push(res[0].title);
             inquirer
                 .prompt([{
                     name: "first_name",
@@ -172,7 +179,7 @@ function addRole() {
                         message: "What is the department id for this role?"
                     },
                 ]).then(function (answer) {
-                    console.log("adding a new role....\n");
+                    console.log(`You have added the role ${answer.title}`);
                     connection.query(
                         "INSERT INTO role SET ?", {
                             title: answer.title,
@@ -220,10 +227,6 @@ function viewAllRoles() {
             console.table(res);
             start();
         });
-}
-
-function addDepartment() {
-
 }
 
 function updateRole() {
