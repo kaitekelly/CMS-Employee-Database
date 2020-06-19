@@ -33,20 +33,35 @@ function start() {
             type: "rawlist",
             message: "What would you like to do?",
             choices: [
+                "Add employee",
+                "Add role",
+                "Add department",
                 "View all employees",
                 "View all departments",
-                "View all employees by manager",
-                "Add employee",
-                "Remove employee",
-                "Update employee role",
-                "Update employee manager",
-                "Add role",
                 "View all roles",
-                "Remove role",
+                "Update employee role",
+                //bonus below
+                "View employees by manager",
+
+                "Update employee manager",
+                "Delete employee",
+                "Delete role",
             ]
         })
         .then(function (answer) {
             switch (answer.action) {
+                case "Add employee":
+                    addEmployee();
+                    break;
+
+                case "Add role":
+                    addRole();
+                    break;
+
+                case "Add department":
+                    addDepartment();
+                    break;
+
                 case "View all employees":
                     viewAllEmployees();
                     break;
@@ -59,35 +74,25 @@ function start() {
                     viewManager();
                     break;
 
-                case "Add employee":
-                    addEmployee();
-                    break;
-
-                case "Remove employee":
-                    removeEmployee();
+                case "View all roles":
+                    viewAllRoles();
                     break;
 
                 case "Update employee role":
                     updateRole();
                     break;
 
+                case "Delete employee":
+                    deleteEmployee();
+                    break;
+
                 case "Update employee manager":
                     updateManager();
                     break;
 
-                case "Add role":
-                    addRole();
+                case "Delete role":
+                    deleteRole();
                     break;
-
-                case "View all roles":
-                    viewAllRoles();
-                    break;
-
-                case "Remove role":
-                    removeRole();
-                    break;
-
-
 
             }
         })
@@ -170,7 +175,6 @@ function addRole() {
                     console.log("adding a new role....\n");
                     connection.query(
                         "INSERT INTO role SET ?", {
-                            //*need to add the placeholder value for this object*
                             title: answer.title,
                             salary: answer.salary,
                             department_id: answer.department_id,
@@ -180,27 +184,17 @@ function addRole() {
                             console.table(res.affectedRows);
                             start();
                         });
-
                 })
         });
+}
 
+function addDepartment() {
 
 }
 
 function viewAllEmployees() {
     connection.query(
         "SELECT * FROM employee",
-        function (err, res) {
-            if (err) throw err;
-            console.table(res);
-            start();
-        });
-
-}
-
-function viewAllRoles() {
-    connection.query(
-        "SELECT * FROM role",
         function (err, res) {
             if (err) throw err;
             console.table(res);
@@ -218,6 +212,68 @@ function viewDepartment() {
         });
 }
 
+function viewAllRoles() {
+    connection.query(
+        "SELECT * FROM role",
+        function (err, res) {
+            if (err) throw err;
+            console.table(res);
+            start();
+        });
+}
+
+function addDepartment() {
+
+}
+
+function updateRole() {
+    connection.query(
+        "SELECT * FROM employee",
+        function (err, res) {
+            if (err) throw err;
+            console.table(res);
+            inquirer
+                .prompt([{
+                        name: "first_name",
+                        type: "input",
+                        message: "What is the employee's first name?"
+                    },
+                    {
+                        name: "last_name",
+                        type: "input",
+                        message: "What is the employee's last name?"
+                    }, {
+                        name: "role_id",
+                        type: "rawlist",
+                        message: "What is the employee's NEW role?",
+                        choices: [
+                            "Sales Lead",
+                            "Salesperson",
+                            "Lead Engineer",
+                            "Software Engineer",
+                            "Account Manager",
+                            "Accountant",
+                            "Legal Team Lead",
+                            "Lawyer",
+                        ]
+                    },
+                ]).then(function (answer) {
+                    console.log("updating employee role....\n");
+                    connection.query(
+                        "UPDATE employee SET role_id WHERE (?,?,?)", {
+                            first_name: answer.first_name,
+                            last_name: answer.last_name,
+                            role_id: answer.role_id
+                        },
+                        function (err, res) {
+                            if (err) throw err;
+                            console.table(res.affectedRows);
+                            start();
+                        });
+                })
+        });
+}
+
 
 
 
@@ -226,60 +282,98 @@ function viewDepartment() {
 
 // }
 
-function removeEmployee() {
+function deleteEmployee() {
     console.log("Removing employee...\n");
     connection.query(
-        "DELETE FROM employee WHERE ?",
-        [{
-            first_name: res.first_name
-        }, {
-            last_name: res.first_name
-        }, ],
+        "SELECT * FROM employee",
         function (err, res) {
             if (err) throw err;
-            console.log(res.affectedRows + " employee deleted!\n");
-            // Call readProducts AFTER the DELETE completes
-            start();
-        }
+            console.table(res);
+            let roleArray = [];
+            roleArray.push(res[0].title);
+            inquirer
+                .prompt([{
+                    name: "first_name",
+                    type: "input",
+                    message: "What is the employee's first name?"
+                }, {
+                    name: "last_name",
+                    type: "input",
+                    message: "What is the employee's last name?"
+                }, {
+                    name: "role_id",
+                    type: "rawlist",
+                    message: "What is the employee's NEW role?",
+                    choices: roleArray
+                }]).then(function (answer) {
+                    console.log(answer);
+                    console.log("deleting an employee....\n");
+                    connection.query(
+                        "UPDATE employee SET role_id WHERE ?", {
+                            first_name: answer.first_name,
+                            last_name: answer.last_name,
+                            role_id: answer.role_id
+                        },
+                        function (err, res) {
+                            if (err) throw err;
+                            console.log(res.affectedRows + " employee deleted!\n");
+                            console.table(res);
+                            start();
+                        }
 
-    );
+                    );
 
+                })
+        })
 }
 
-function updateRole() {
+function updateManager() {
     connection.query(
-        "UPDATE employee SET ? WHERE ?",
-        [{
-                role_id: answer.role_id
-            },
-            {
-                manager_id: answer.manager_id
-            }
-        ],
-        function (error) {
-            if (error) throw err;
-            console.log("Role updated successfully!");
-            start();
-        }
-    );
-
+        "SELECT * FROM employee",
+        function (err, res) {
+            if (err) throw err;
+            console.table(res);
+            inquirer
+                .prompt([{
+                        name: "first_name",
+                        type: "input",
+                        message: "What is the employee's first name?"
+                    },
+                    {
+                        name: "last_name",
+                        type: "input",
+                        message: "What is the employee's last name?"
+                    }, {
+                        name: "role_id",
+                        type: "rawlist",
+                        message: "What is the employee's NEW role?",
+                        choices: [
+                            "Sales Lead",
+                            "Salesperson",
+                            "Lead Engineer",
+                            "Software Engineer",
+                            "Account Manager",
+                            "Accountant",
+                            "Legal Team Lead",
+                            "Lawyer",
+                        ]
+                    },
+                ]).then(function (answer) {
+                    console.log("updating employee role....\n");
+                    connection.query(
+                        "UPDATE employee SET role_id WHERE ?", {
+                            first_name: answer.first_name,
+                            last_name: answer.last_name,
+                            role_id: answer.role_id
+                        },
+                        function (err, res) {
+                            if (err) throw err;
+                            console.table(res.affectedRows);
+                            start();
+                        });
+                })
+        });
 }
-
-// function addRole() {
-
-// // Sales Lead
-// // Salesperson
-// //Lead Engineer
-// // Software Engineer
-// //Account Manager
-// //Accountant
-// //Legal Team Lead
-// //Lawyer
-// }
-
-// function updateRole() {
-
-// }
 
 // function updateManager() {
 

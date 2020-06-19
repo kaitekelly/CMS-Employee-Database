@@ -21,7 +21,7 @@ CMS-Employee-Database
 n/a
 
 # Installation: 
-💾 In the command line of the working directory, install the following NPM packages: NPM install, mySQL, Inquirer, Console.table
+💾 In the command line of the working directory, install the following NPM packages: NPM install, mySQL, Inquirer, Console.table, envdot
 
 # Usage: 
 
@@ -30,7 +30,7 @@ n/a
 
 # Contributions: 
 Contributor, Kait Kelly. View github profile through badge above. 
-Technology used: Node.js, NPM's, MySQL, MySQL Workbench,  HTML, Javascript, CSS, 
+Technology used: Node.js, NPM's(mysql, envdot, inquirer, console.table), MySQL, MySQL Workbench,  HTML, Javascript, CSS, 
 
 # Tests: 
 ⚙️ No tests have been performed on this application. 
