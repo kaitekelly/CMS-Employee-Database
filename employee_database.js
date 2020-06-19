@@ -3,7 +3,7 @@ const inquirer = require("inquirer");
 const cTable = require('console.table');
 require('dotenv').config();
 
-let roleList = [];
+// let roleList = [];
 let roleArray = [];
 let employeeArray = [];
 // create the connection information for the sql database
@@ -103,8 +103,8 @@ function addEmployee() {
     connection.query("SELECT * FROM role",
         function (err, res) {
             if (err) throw err;
-            console.log(res + "from line 108");
-            let roleArray = [];
+            // console.log(res + "from line 108");
+            // let roleArray = [];
             for (let i = 0; i < res.length; i++) {
                 // let roleList = res[i].id + ' ' + res[i].title +  ' ' + res[i].salary + ' ' + res[i].department_id;
                 let roleList = res[i].title;
@@ -261,58 +261,71 @@ function viewAllRoles() {
 function updateRole() {
     connection.query(
         "SELECT * FROM employee",
+        function (err, emp) {
+            if (err) throw err;
+            // console.log(emp + "from line 266");
+            // let employeeArray = [];
+            for (let i = 0; i < emp.length; i++) {
+                let employeeList = emp[i].id + ' ' + emp[i].first_name + ' ' + emp[i].last_name + ' ' + emp[i].role_id + ' ' + emp[i].manager_id;
+                console.log(employeeList + "from employee query");
+                employeeArray.push(employeeList);
+            }
+        })
+
+    connection.query("SELECT * FROM role",
         function (err, res) {
             if (err) throw err;
-            console.table(res);
-            inquirer
-                .prompt([{
-                        name: "first_name",
-                        type: "input",
-                        message: "What is the employee's first name?"
-                    },
-                    {
-                        name: "last_name",
-                        type: "input",
-                        message: "What is the employee's last name?"
-                    }, {
-                        name: "role_id",
-                        type: "rawlist",
-                        message: "What is the employee's NEW role?",
-                        choices: [
-                            "Sales Lead",
-                            "Salesperson",
-                            "Lead Engineer",
-                            "Software Engineer",
-                            "Account Manager",
-                            "Accountant",
-                            "Legal Team Lead",
-                            "Lawyer",
-                        ]
-                    },
-                ]).then(function (answer) {
-                    console.log("updating employee role....\n");
-                    connection.query(
-                        "UPDATE employee SET role_id WHERE (?,?,?)", {
-                            first_name: answer.first_name,
-                            last_name: answer.last_name,
-                            role_id: answer.role_id
-                        },
-                        function (err, res) {
-                            if (err) throw err;
-                            console.table(res.affectedRows);
-                            start();
-                        });
-                })
-        });
+            // console.log(res + "from line 108");
+            // let roleArray = [];
+            for (let i = 0; i < res.length; i++) {
+                // let roleList = res[i].id + ' ' + res[i].title +  ' ' + res[i].salary + ' ' + res[i].department_id;
+                let roleList = res[i].title;
+                console.log(roleList + "from role query");
+                roleArray.push(roleList);
+            }
+            askRole();
+        })
+
+
+    function askRole() {
+        inquirer
+        .prompt([{
+                name: "employee",
+                type: "rawlist",
+                message: "What is the employee's name?",
+                choices: employeeArray
+            },
+            {
+                name: "role_id",
+                type: "rawlist",
+                message: "What is the employee's NEW role?",
+                choices: roleArray
+                // [
+                //     "Sales Lead",
+                //     "Salesperson",
+                //     "Lead Engineer",
+                //     "Software Engineer",
+                //     "Account Manager",
+                //     "Accountant",
+                //     "Legal Team Lead",
+                //     "Lawyer",
+                // ]
+            },
+        ]).then(function (answer) {
+            console.log("updating employee role....\n");
+            connection.query(
+                "UPDATE employee SET role_id WHERE ?", {
+                    role_id: answer.role_id
+                },
+                function (err, res) {
+                    if (err) throw err;
+                    console.table(res.affectedRows);
+                    start();
+                });
+        })
+    }
 }
 
-
-
-
-
-// function viewManager() {
-
-// }
 
 function deleteEmployee() {
     console.log("Removing employee...\n");
@@ -406,6 +419,11 @@ function updateManager() {
                 })
         });
 }
+
+
+// function viewManager() {
+
+// }
 
 // function updateManager() {
 
