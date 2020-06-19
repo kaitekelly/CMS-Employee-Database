@@ -100,8 +100,6 @@ function start() {
 }
 
 function addEmployee() {
-    //connection.query (SELECT * FROM roles, an array of objects will return including id, title, salary, dept id)
-    //use map function  to create a new array where it is just returning the title as a string; from an 
     connection.query("SELECT * FROM role",
         function (err, res) {
             if (err) throw err;
@@ -111,10 +109,8 @@ function addEmployee() {
                 // let roleList = res[i].id + ' ' + res[i].title +  ' ' + res[i].salary + ' ' + res[i].department_id;
                 let roleList = res[i].title;
                 console.log(roleList + "from line 111");
-                
                 roleArray.push(roleList);
             }
-            // roleArray.push(res[0].title);
             inquirer
                 .prompt([{
                     name: "first_name",
@@ -196,6 +192,39 @@ function addRole() {
 }
 
 function addDepartment() {
+    connection.query(
+        "SELECT * FROM departments",
+        function (err, res) {
+            if (err) throw err;
+            console.table(res);
+            let deptArray = [];
+            deptArray.push(res[0].name);
+            inquirer
+                .prompt([{
+                        name: "id",
+                        type: "input",
+                        message: "What is the id of the department you would like to create?"
+                    },
+                    {
+                        name: "name",
+                        type: "input",
+                        message: "What is the name of the department you would like to create?"
+                    },
+                ]).then(function (answer) {
+                    console.log(`You have added the dept ${answer.dept}`);
+                    connection.query(
+                        "INSERT INTO departments SET ?", {
+                            id: answer.id,
+                            name: answer.name,
+                            // department_id: answer.department_id,
+                        },
+                        function (err, res) {
+                            if (err) throw err;
+                            console.table(res.affectedRows);
+                            start();
+                        });
+                })
+        });
 
 }
 
