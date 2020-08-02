@@ -3,7 +3,6 @@ const inquirer = require("inquirer");
 const cTable = require('console.table');
 require('dotenv').config();
 
-// let roleList = [];
 let roleArray = [];
 let employeeArray = [];
 // create the connection information for the sql database
@@ -42,11 +41,6 @@ function start() {
                 "View all departments",
                 "View all roles",
                 "Update employee role",
-                //bonus below
-                "View employees by manager",
-                "Update employee manager",
-                "Delete employee",
-                "Delete role",
             ]
         })
         .then(function (answer) {
@@ -283,52 +277,61 @@ function updateRole() {
 
     function askRole() {
         inquirer
-        .prompt([{
-                name: "employee",
-                type: "rawlist",
-                message: "What is the employee's name?",
-                choices: employeeArray
-            },
-            {
-                name: "role_id",
-                type: "rawlist",
-                message: "What is the employee's NEW role?",
-                choices: roleArray
-            },
-        ]).then(function (answer) {
-            console.log(answer + "line 305")
-            console.log("updating employee role....\n");
-            connection.query(
-                // "UPDATE employee SET role_id WHERE first_name ? AND last_name ?", {
-                    "UPDATE employee SET role_id WHERE first_name ? AND last_name ?", [
-                        // {
-                    // answer: answer.role_id},
-                    {
-                    answer: answer.first_name},{
-                    answer: answer.last_name,
-                }],
-                function (err, res) {
-                    if (err) throw err;
-                    console.table(res.affectedRows);
-                    console.log(answer + "line 316");
-                    start();
-                });
-        })
+            .prompt([{
+                    name: "employee",
+                    type: "list",
+                    message: "What is the employee's name?",
+                    choices: employeeArray
+                },
+                {
+                    name: "role_id",
+                    type: "list",
+                    message: "What is the employee's NEW role?",
+                    choices:
+                        // choices: roleArray
+                        // choices: [{
+                        //         name: "manager",
+                        //         value: 0
+                        //     },
+                        //     {
+                        //         name: "Tech Lead",
+                        //         value: 1
+                        //     }
+                        // ]
+                    ["Sales Lead",
+                    "Salesperson",
+                    "Lead Engineer",
+                    "Software Engineer",
+                    "Account Manager",
+                    "Accountant",
+                    "Legal Team Lead",
+                    "Lawyer"]
+                },
+            ]).then(function (answer) {
+                // let updateRoleArr = [];
+                // let updatedRole = JSON.parse(answer);
+                // updateRoleArr.push(updatedRole);
+                console.log(answer);
+                // {answer: answer.role_id}
+                connection.query(`UPDATE employee SET role_id = ${answer.role_id} WHERE`
+                    // "UPDATE employee SET role_id WHERE first_name ? AND last_name ?", {
+                    // "UPDATE employee SET ? WHERE ?", 
+                    // [{
+                    //         role_id: answer.role_id
+                    //     },
+                    //     {
+                    //         answer: answer.id
+                    //     }
+                    // ]
+                    ,
+                    function (err, res) {
+                        if (err) throw err;
+                        console.table(res.affectedRows);
+                        start();
+                    });
+            })
     }
 }
-
-//[
-    // {
-    //     quantity: 100
-    //   },
-    //   {
-    //     flavor: "Rocky Road"
-    //   }
-    // ],
-//'UPDATE employee SET role_id WHERE first_name = `answer` = NULL AND last_name = ?'
-// "You have an error in your SQL syntax;  
-//right syntax to use near 'WHERE first_name = `answer` = 'CEO' AND last_name = ?' at line 1"
-// ('UPDATE collegeusers SET printCount = ? WHERE userid = ?', [printCount, userid],
 
 function deleteEmployee() {
     console.log("Removing employee...\n");
@@ -351,7 +354,7 @@ function deleteEmployee() {
                 }, {
                     name: "role_id",
                     type: "rawlist",
-                    message: "What is the employee's NEW role?",
+                    message: "What is the employee's role?",
                     choices: roleArray
                 }]).then(function (answer) {
                     console.log(answer);
@@ -375,76 +378,4 @@ function deleteEmployee() {
         })
 }
 
-// function updateManager() {
-//     connection.query(
-//         "SELECT * FROM employee",
-//         function (err, res) {
-//             if (err) throw err;
-//             console.table(res);
-//             inquirer
-//                 .prompt([{
-//                         name: "first_name",
-//                         type: "input",
-//                         message: "What is the employee's first name?"
-//                     },
-//                     {
-//                         name: "last_name",
-//                         type: "input",
-//                         message: "What is the employee's last name?"
-//                     }, {
-//                         name: "role_id",
-//                         type: "rawlist",
-//                         message: "What is the employee's NEW role?",
-//                         choices: [
-//                             "Sales Lead",
-//                             "Salesperson",
-//                             "Lead Engineer",
-//                             "Software Engineer",
-//                             "Account Manager",
-//                             "Accountant",
-//                             "Legal Team Lead",
-//                             "Lawyer",
-//                         ]
-//                     },
-//                 ]).then(function (answer) {
-//                     console.log("updating employee role....\n");
-//                     connection.query(
-//                         "UPDATE employee SET role_id WHERE ?", {
-//                             first_name: answer.first_name,
-//                             last_name: answer.last_name,
-//                             role_id: answer.role_id
-//                         },
-//                         function (err, res) {
-//                             if (err) throw err;
-//                             console.table(res.affectedRows);
-//                             start();
-//                         });
-//                 })
-//         });
-// }
 
-
-// function viewManager() {
-
-// }
-
-// function updateManager() {
-
-// }
-
-//  pseudocode
-
-//schema
-//employee
-//role
-//department
-
-//start function - Questions: What would you like to do
-//list choices, .then(answer -> switch case to choices, then to that function)
-
-//.then with if statements to 
-
-//create function- employee record
-//read function - list choices to retrieve and select employee record
-//update function- employee record (addEmployee function, update employee role function, )
-// delete function - employee record
